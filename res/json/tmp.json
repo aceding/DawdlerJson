@@ -1,0 +1,29 @@
+{
+  "name": "tom",
+  "age": 5,
+  "parent": {
+    "father": "tomFather",
+    "mother": "tomMather"
+  },
+  "hobby": [
+    [
+      {
+        "day": "eat",
+        "night": "sleep"
+      }
+    ],
+    [
+      {
+        "day": "sleep",
+        "night": "play"
+      }
+    ],
+    [
+      {
+        "day": "play",
+        "night": "swim",
+        "dream": "outside"
+      }
+    ]
+  ]
+}
