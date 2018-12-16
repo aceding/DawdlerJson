@@ -11,7 +11,7 @@
         }
 
         public static List<${className}> convertFromJSONArray(String content){
-            Type type = new DelegateType<${className}>(){}.getType();
+            Type type = new ${className}(){}.getClass().getGenericSuperclass();
             List<${className}> result = JSONConverter.convertFromJSONArray(content, type);
             return result;
         }
