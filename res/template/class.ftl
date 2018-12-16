@@ -1,6 +1,5 @@
 package ${packageName};
 
-import com.ace.dawdler.json.converter.DelegateType;
 import com.ace.dawdler.json.converter.JSONConverter;
 import com.ace.dawdler.json.annotation.Alias;
 import java.lang.reflect.Type;
