@@ -1,12 +1,14 @@
 package com.ace.dawdler.json.utils;
 
 /**
- * 文本相关的工具类。
+ * util class help handle the text.
+ *
+ * @author aceding
  */
 public class TextUtils {
 
     /**
-     * 判断文本是不是为null或者是空字符串。
+     * check the string is null or empty.
      *
      * @param str
      * @return
@@ -16,5 +18,18 @@ public class TextUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * convert the string's first word to upper case.
+     * @param str
+     * @return
+     */
+    public static String firstWord2UpperCase(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        String firstWord = str.substring(0, 1);
+        return firstWord.toUpperCase() + str.substring(1);
     }
 }

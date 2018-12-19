@@ -18,7 +18,67 @@ import org.json.JSONObject;
 public class JSONConverter {
 
     public static <T> JSONObject convert2JSONObject(T t) {
-        return null;
+        JSONObject jsonObj = new JSONObject();
+        if (null == t) {
+            return jsonObj;
+        }
+
+        Field[] fields = t.getClass().getDeclaredFields();
+        if (null == fields || fields.length == 0) {
+            return jsonObj;
+        }
+
+        for (Field field : fields) {
+            Alias fieldAlias = field.getAnnotation(Alias.class);
+            if (null == fieldAlias) {
+                continue;
+            }
+            String fieldName = fieldAlias.value();
+            if (TextUtils.isEmpty(fieldName)) {
+                continue;
+            }
+
+            try {
+                Object fieldObj = field.get(t);
+                if (null == fieldObj) {
+                    continue;
+                }
+                if (Utils.isPrimitiveType(fieldObj)) {
+                    jsonObj.put(fieldName, fieldObj);
+                } else if (fieldObj instanceof List<?>) {
+                    jsonObj.put(fieldName, convert2JSONArray((List<?>) fieldObj));
+                } else {
+                    jsonObj.put(fieldName, convert2JSONObject(fieldObj));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return jsonObj;
+    }
+
+    public static <T> JSONArray convert2JSONArray(List<T> list) {
+        JSONArray jsonArray = new JSONArray();
+        if (null == list || list.isEmpty()) {
+            return jsonArray;
+        }
+        for (T t : list) {
+            if (null == t) {
+                continue;
+            }
+            if (Utils.isPrimitiveType(t)) {
+                jsonArray.put(t);
+            } else if (t instanceof List<?>) {
+                jsonArray.put(convert2JSONArray((List<?>) t));
+            } else {
+                jsonArray.put(convert2JSONObject(t));
+            }
+        }
+
+        return jsonArray;
     }
 
     public static <T> T convertFromJSONObject(String jsonStr, Class<T> cls) {
@@ -109,7 +169,13 @@ public class JSONConverter {
                 continue;
             }
             Alias fieldAlias = field.getAnnotation(Alias.class);
+            if (null == fieldAlias) {
+                continue;
+            }
             String fieldName = fieldAlias.value();
+            if (TextUtils.isEmpty(fieldName)) {
+                continue;
+            }
             LogUtils.printLog("fieldName is: " + fieldName);
             if (!jsonObj.has(fieldName)) {
                 LogUtils.printLog("jsonObj has no fieldName, return.");

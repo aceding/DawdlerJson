@@ -1,5 +1,8 @@
 package com.ace.dawdler.json.utils;
 
+/**
+ * util class help print log.
+ */
 public class LogUtils {
 
     public static void printLog(String content) {

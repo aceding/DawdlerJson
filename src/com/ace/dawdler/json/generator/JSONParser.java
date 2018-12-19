@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.ace.dawdler.json.utils.TextUtils.firstWord2UpperCase;
+
 /**
  * Json文本解析类，解析Json文本为JavaBean。
  *
@@ -27,45 +29,35 @@ public class JSONParser {
 
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-            parseJSONObject(jsonStr);
+            parseJSONObject(jsonObject);
         } catch (Exception e) {
             try {
                 JSONArray jsonArray = new JSONArray(jsonStr);
-                parseJSONArray(jsonStr);
+                parseJSONArray(jsonArray);
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
         }
     }
 
-    public static void parseJSONObject(final String jsonStr) {
-        if (TextUtils.isEmpty(jsonStr)) {
+    public static void parseJSONObject(JSONObject jsonObj) {
+        if (null == jsonObj) {
             return;
         }
 
         LinkedHashMap<String, Map<String, Attr>> classMap = new LinkedHashMap<>();
-        try {
-            JSONObject jsonObj = new JSONObject(jsonStr);
-            parseJSONObject(CLASS_NAME, jsonObj, classMap);
-            CodeGenerator.genJavaBeans(classMap);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        parseJSONObject(CLASS_NAME, jsonObj, classMap);
+        CodeGenerator.genJavaBeans(classMap);
     }
 
-    public static void parseJSONArray(final String jsonStr) {
-        if (TextUtils.isEmpty(jsonStr)) {
+    public static void parseJSONArray(JSONArray jsonArray) {
+        if (null == jsonArray) {
             return;
         }
 
         LinkedHashMap<String, Map<String, Attr>> classMap = new LinkedHashMap<>();
-        try {
-            JSONArray jsonArray = new JSONArray(jsonStr);
-            parseJSONArray(CLASS_NAME, CLASS_NAME, jsonArray, classMap);
-            CodeGenerator.genJavaBeans(classMap);
-        } catch (JSONException e1) {
-            e1.printStackTrace();
-        }
+        parseJSONArray(CLASS_NAME, CLASS_NAME, jsonArray, classMap);
+        CodeGenerator.genJavaBeans(classMap);
     }
 
     public static void parseJSONObject(String fileName, JSONObject jsonObj, Map<String, Map<String, Attr>> classMap) {
@@ -73,7 +65,7 @@ public class JSONParser {
             return;
         }
 
-        fileName = Utils.firstWord2UpperCase(fileName);
+        fileName = firstWord2UpperCase(fileName);
         Map<String, Attr> attrMap = null;
         if (classMap.containsKey(fileName)) {
             attrMap = classMap.get(fileName);
@@ -106,11 +98,11 @@ public class JSONParser {
             } else if (obj instanceof String) {
                 attr = new Attr(key, "String");
             } else if (obj instanceof JSONObject) {
-                String usableClsName = Utils.getUsableClassName(fileName, key);
+                String usableClsName = getUsableClassName(fileName, key);
                 parseJSONObject(fileName + "#" + usableClsName, (JSONObject) obj, classMap);
                 attr = new Attr(key, usableClsName);
             } else if (obj instanceof JSONArray) {
-                String usableClsName = Utils.getUsableClassName(fileName, key);
+                String usableClsName = getUsableClassName(fileName, key);
                 String type = parseJSONArray(usableClsName, fileName + "#" + usableClsName, (JSONArray) obj, classMap);
                 attr = new Attr(key, "List<" + type + ">");
             } else {
@@ -133,7 +125,7 @@ public class JSONParser {
             }
         }
 
-        className = Utils.firstWord2UpperCase(className);
+        className = firstWord2UpperCase(className);
         String result = null;
 
         boolean allValueIsOneType = true;
@@ -159,7 +151,7 @@ public class JSONParser {
             result = className;
         } else if (valueType == JSONArray.class) {
             String tmp = parseJSONArray(className + "$Bean", fileName + "$Bean", jsonArray.optJSONArray(0), classMap);
-            if(tmp.equals(className + "$Bean")) {
+            if (tmp.equals(className + "$Bean")) {
                 for (int i = 1, n = jsonArray.length(); i < n; i++) {
                     parseJSONArray(className + "$Bean", fileName + "$Bean", jsonArray.optJSONArray(i), classMap);
                 }
@@ -173,4 +165,21 @@ public class JSONParser {
         return result;
     }
 
+
+    public static String getUsableClassName(String fileName, String className) {
+        if (TextUtils.isEmpty(fileName)) {
+            return firstWord2UpperCase(className);
+        }
+        String[] names = fileName.split("#");
+        if (null == names || names.length == 0) {
+            return firstWord2UpperCase(className);
+        }
+
+        for (String name : names) {
+            if (name.equalsIgnoreCase(className)) {
+                return getUsableClassName(fileName, className + "Bean");
+            }
+        }
+        return firstWord2UpperCase(className);
+    }
 }

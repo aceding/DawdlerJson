@@ -1,25 +1,40 @@
 package com.ace.dawdler.json.test;
 
+import com.ace.dawdler.json.gen.JavaBean;
 import com.ace.dawdler.json.generator.JSONParser;
 import com.ace.dawdler.json.utils.FileUtils;
+import com.ace.dawdler.json.utils.TextUtils;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        // 1. 读取json文件里面的内容。
+        // 1. read the json string from file.
         String filePath = System.getProperty("user.dir") + "\\res\\json\\tmp.json";
-        String jsonStr = FileUtils.filePath2String(filePath);
-        if (null == jsonStr || jsonStr.length() <= 0) {
+        String jsonStr = null;
+        try {
+            jsonStr = FileUtils.readFileToString(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(jsonStr)) {
             return;
         }
 
-        // 2. 解析json文件，生成对应的.java文件。
+        // 2. parse json string，auto make the.java file.
         JSONParser.parseJSONStr(jsonStr);
 
-//        List<JavaBean> jsonBeanList = JavaBean.convertFromJSONArray(jsonStr);
+        //3. deserialize json string to JavaBean.
+        JavaBean bean = JavaBean.convertFromJSONObject(jsonStr);
 
-        System.out.println("");
+        //4. serialize JavaBean to json object.
+        JSONObject jsonObj = bean.convert2JSONObject();
+
+        System.out.println(jsonObj);
     }
 
 }
