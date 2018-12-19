@@ -2,6 +2,8 @@ package com.ace.dawdler.json.utils;
 
 /**
  * util class help print log.
+ *
+ * @author aceding
  */
 public class LogUtils {
 

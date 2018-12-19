@@ -12,54 +12,78 @@ import org.json.JSONObject;
 import static com.ace.dawdler.json.utils.TextUtils.firstWord2UpperCase;
 
 /**
- * Json文本解析类，解析Json文本为JavaBean。
+ * parse the json object, and make the attrs tree.
  *
  * @author aceding
  */
 public class JSONParser {
 
-    public static final String PACKAGE_NAME = "com.ace.dawdler.json.gen";
-
-    public static final String CLASS_NAME = "JavaBean";
-
-    public static void parseJSONStr(String jsonStr) {
+    /**
+     * parse the json string and build the attrs tree, then generator the .java file.
+     *
+     * @param packageName
+     * @param className
+     * @param jsonStr
+     */
+    public static void parseJSONStr(String packageName, String className, String jsonStr) {
         if (TextUtils.isEmpty(jsonStr)) {
             return;
         }
 
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-            parseJSONObject(jsonObject);
+            parseJSONObject(packageName, className, jsonObject);
         } catch (Exception e) {
             try {
                 JSONArray jsonArray = new JSONArray(jsonStr);
-                parseJSONArray(jsonArray);
+                parseJSONArray(packageName, className, jsonArray);
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
         }
     }
 
-    public static void parseJSONObject(JSONObject jsonObj) {
+    /**
+     * parse the json object and make the attrs tree, then generator the .java file.
+     *
+     * @param packageName
+     * @param className
+     * @param jsonObj
+     */
+    public static void parseJSONObject(String packageName, String className, JSONObject jsonObj) {
         if (null == jsonObj) {
             return;
         }
 
         LinkedHashMap<String, Map<String, Attr>> classMap = new LinkedHashMap<>();
-        parseJSONObject(CLASS_NAME, jsonObj, classMap);
-        CodeGenerator.genJavaBeans(classMap);
+        parseJSONObject(className, jsonObj, classMap);
+        CodeGenerator.genJavaBeans(packageName, classMap);
     }
 
-    public static void parseJSONArray(JSONArray jsonArray) {
+    /**
+     * parse the json array and make the attrs tree, and then generator the .java file.
+     *
+     * @param packageName
+     * @param className
+     * @param jsonArray
+     */
+    public static void parseJSONArray(String packageName, String className, JSONArray jsonArray) {
         if (null == jsonArray) {
             return;
         }
 
         LinkedHashMap<String, Map<String, Attr>> classMap = new LinkedHashMap<>();
-        parseJSONArray(CLASS_NAME, CLASS_NAME, jsonArray, classMap);
-        CodeGenerator.genJavaBeans(classMap);
+        parseJSONArray(className, className, jsonArray, classMap);
+        CodeGenerator.genJavaBeans(packageName, classMap);
     }
 
+    /**
+     * parse the json object and get the attrs, then to fill in the attrs tree.
+     *
+     * @param fileName
+     * @param jsonObj
+     * @param classMap
+     */
     public static void parseJSONObject(String fileName, JSONObject jsonObj, Map<String, Map<String, Attr>> classMap) {
         if (TextUtils.isEmpty(fileName) || null == jsonObj) {
             return;
@@ -113,12 +137,19 @@ public class JSONParser {
         }
     }
 
+    /**
+     * parse the json array object and get the attrs, then to fill in the attrs tree.
+     *
+     * @param className
+     * @param fileName
+     * @param jsonArray
+     * @param classMap
+     * @return
+     */
     public static String parseJSONArray(String className, String fileName, final JSONArray jsonArray, Map<String, Map<String, Attr>> classMap) {
-        //异常逻辑处理。
         if (TextUtils.isEmpty(className) || null == jsonArray || jsonArray.length() == 0) {
             return null;
         }
-        //首先清除jsonArray中为空的value
         for (int i = jsonArray.length() - 1; i >= 0; i--) {
             if (null == jsonArray.opt(i)) {
                 jsonArray.remove(i);
@@ -137,7 +168,6 @@ public class JSONParser {
         }
 
         if (!allValueIsOneType) {
-            //如果JSONArray的内容不是同一种类型，认为是不合理的设计，不进行处理。
             LogUtils.printLog("JsonArray's value not one type, not good design, return.");
             return result;
 
@@ -158,14 +188,18 @@ public class JSONParser {
             }
             result = "List<" + tmp + ">";
         } else {
-            //如果JSONArrayList的内容全部是基础类型,则不需要创建新的类。
             result = valueType.getSimpleName();
         }
 
         return result;
     }
 
-
+    /**
+     * original class name maybe used, make the new class name and return.
+     * @param fileName
+     * @param className
+     * @return
+     */
     public static String getUsableClassName(String fileName, String className) {
         if (TextUtils.isEmpty(fileName)) {
             return firstWord2UpperCase(className);

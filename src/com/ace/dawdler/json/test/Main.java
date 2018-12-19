@@ -26,7 +26,9 @@ public class Main {
         }
 
         // 2. parse json string，auto make the.java file.
-        JSONParser.parseJSONStr(jsonStr);
+        String packageName = "com.ace.dawdler.json.gen";
+        String className = "JavaBean";
+        JSONParser.parseJSONStr(packageName, className, jsonStr);
 
         //3. deserialize json string to JavaBean.
         JavaBean bean = JavaBean.convertFromJSONObject(jsonStr);
@@ -34,6 +36,7 @@ public class Main {
         //4. serialize JavaBean to json object.
         JSONObject jsonObj = bean.convert2JSONObject();
 
+        //5. print the serialized json object.
         System.out.println(jsonObj);
     }
 

@@ -15,8 +15,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * class help to achieve the conversion between the json and java bean.
+ *
+ * @author aceding
+ */
 public class JSONConverter {
 
+    /**
+     * convert the java bean object to json object.
+     *
+     * @param t
+     * @param <T>
+     * @return
+     */
     public static <T> JSONObject convert2JSONObject(T t) {
         JSONObject jsonObj = new JSONObject();
         if (null == t) {
@@ -60,6 +72,13 @@ public class JSONConverter {
         return jsonObj;
     }
 
+    /**
+     * convert the java bean object list to json array object.
+     *
+     * @param list
+     * @param <T>
+     * @return
+     */
     public static <T> JSONArray convert2JSONArray(List<T> list) {
         JSONArray jsonArray = new JSONArray();
         if (null == list || list.isEmpty()) {
@@ -81,6 +100,14 @@ public class JSONConverter {
         return jsonArray;
     }
 
+    /**
+     * convert the json string to java bean object.
+     *
+     * @param jsonStr
+     * @param cls
+     * @param <T>
+     * @return
+     */
     public static <T> T convertFromJSONObject(String jsonStr, Class<T> cls) {
         if (TextUtils.isEmpty(jsonStr) || null == cls) {
             return null;
@@ -95,6 +122,14 @@ public class JSONConverter {
         return null;
     }
 
+    /**
+     * convert the json string to java bean object list.
+     *
+     * @param jsonStr
+     * @param type
+     * @param <T>
+     * @return
+     */
     public static <T> List<T> convertFromJSONArray(String jsonStr, Type type) {
         if (TextUtils.isEmpty(jsonStr) || null == type) {
             return null;
@@ -109,6 +144,14 @@ public class JSONConverter {
         return null;
     }
 
+    /**
+     * convert the json array object to java bean object list.
+     *
+     * @param jsonArray
+     * @param type
+     * @param <T>
+     * @return
+     */
     public static <T> List<T> convertFromJSONArray(JSONArray jsonArray, Type type) {
         if (null == jsonArray || null == type) {
             LogUtils.printLog("null == jsonArray or null == type, return.");
@@ -136,6 +179,14 @@ public class JSONConverter {
         return resultList;
     }
 
+    /**
+     * convert the json object to java bean object.
+     *
+     * @param jsonObj
+     * @param cls
+     * @param <T>
+     * @return
+     */
     public static <T> T convertFromJSONObject(JSONObject jsonObj, Class<T> cls) {
         if (null == jsonObj || null == cls) {
             LogUtils.printLog("convertFrom jsonObj is null or cls is null.");

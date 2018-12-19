@@ -18,18 +18,24 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 /**
- * JavaBean代码生成器。
+ * use the FreeMaker library to generator .java file.
  *
  * @author aceding
  */
 public class CodeGenerator {
 
-    public static final String PACKAGE_NAME = "com.ace.dawdler.json.gen";
-
     public static String ROOT_PATH = System.getProperty("user.dir");
 
     public static String TEMPLATE_PATH = ROOT_PATH + File.separator + "res" + File.separator + "template";
 
+    /**
+     * method help to generator the outer class.
+     *
+     * @param packageName
+     * @param className
+     * @param fileName
+     * @param attr_list
+     */
     private static void genClass(String packageName, String className, String fileName, List<Attr> attr_list) {
         Template temp = null;
 
@@ -109,6 +115,13 @@ public class CodeGenerator {
         LogUtils.printLog("JsonParser gen code success!");
     }
 
+    /**
+     * method help to generator the inner class.
+     *
+     * @param className
+     * @param fileName
+     * @param attr_list
+     */
     private static void genInnerClass(String className, String fileName, List<Attr> attr_list) {
         Template temp = null;
 
@@ -184,7 +197,12 @@ public class CodeGenerator {
         LogUtils.printLog("JsonParser gen code success!");
     }
 
-    public static void genJavaBeans(LinkedHashMap<String, Map<String, Attr>> classMap) {
+    /**
+     * input the package name and attrs tree, to generator the java bean file.
+     *
+     * @param classMap
+     */
+    public static void genJavaBeans(String packageName, LinkedHashMap<String, Map<String, Attr>> classMap) {
         if (null == classMap || classMap.isEmpty()) {
             return;
         }
@@ -197,7 +215,7 @@ public class CodeGenerator {
                 String className = fileName.substring(fileName.lastIndexOf("#") + 1);
                 genInnerClass(className, fileName, new ArrayList<>(attrMap.values()));
             } else {
-                genClass(PACKAGE_NAME, fileName, fileName, new ArrayList<>(attrMap.values()));
+                genClass(packageName, fileName, fileName, new ArrayList<>(attrMap.values()));
             }
         }
 

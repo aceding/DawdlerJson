@@ -1,8 +1,15 @@
 package com.ace.dawdler.json.generator;
 
+/**
+ * class help record he field name and type.
+ *
+ * @author aceding
+ */
 public class Attr {
-    public String field;
-    public String type;
+
+    public String field;//field name.
+
+    public String type;//field type.
 
     public Attr(String field, String type) {
         this.field = field;
