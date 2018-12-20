@@ -57,7 +57,7 @@ public class FileUtils {
             reader = new InputStreamReader(fis, "UTF-8");
             int size = (int) file.length();
             if (size > 1024 * 12) {
-                buffer = new char[1024 * 4];
+                buffer = new char[1024 * 8];
                 StringBuilder result = new StringBuilder(1024 * 12);
                 while (-1 != (n = reader.read(buffer))) {
                     result.append(buffer, 0, n);
