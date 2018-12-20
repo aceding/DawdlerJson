@@ -181,7 +181,7 @@ public class JSONParser {
             result = className;
         } else if (valueType == JSONArray.class) {
             String tmp = parseJSONArray(className + "$Bean", fileName + "$Bean", jsonArray.optJSONArray(0), classMap);
-            if (tmp.equals(className + "$Bean")) {
+            if ((className + "$Bean").equals(tmp)) {
                 for (int i = 1, n = jsonArray.length(); i < n; i++) {
                     parseJSONArray(className + "$Bean", fileName + "$Bean", jsonArray.optJSONArray(i), classMap);
                 }
@@ -205,7 +205,7 @@ public class JSONParser {
             return firstWord2UpperCase(className);
         }
         String[] names = fileName.split("#");
-        if (null == names || names.length == 0) {
+        if (names.length == 0) {
             return firstWord2UpperCase(className);
         }
 
