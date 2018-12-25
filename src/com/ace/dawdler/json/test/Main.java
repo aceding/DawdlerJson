@@ -1,6 +1,5 @@
 package com.ace.dawdler.json.test;
 
-import com.ace.dawdler.json.gen.JavaBean;
 import com.ace.dawdler.json.generator.JSONParser;
 import com.ace.dawdler.json.utils.FileUtils;
 import com.ace.dawdler.json.utils.TextUtils;
@@ -31,13 +30,13 @@ public class Main {
         JSONParser.parseJSONStr(packageName, className, jsonStr);
 
         //3. deserialize json string to JavaBean.
-        JavaBean bean = JavaBean.convertFromJSONObject(jsonStr);
+//        JavaBean bean = JavaBean.convertFromJSONObject(jsonStr);
 
         //4. serialize JavaBean to json object.
-        JSONObject jsonObj = bean.convert2JSONObject();
+//        JSONObject jsonObj = bean.convert2JSONObject();
 
         //5. print the serialized json object.
-        System.out.println(jsonObj);
+//        System.out.println(jsonObj);
     }
 
 }
