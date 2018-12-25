@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.util.*;
 
 import com.ace.dawdler.json.utils.FileUtils;
+import com.ace.dawdler.json.utils.LogUtils;
 import com.ace.dawdler.json.utils.Utils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
