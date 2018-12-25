@@ -1,5 +1,9 @@
 package com.ace.dawdler.json.converter;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -7,10 +11,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ace.dawdler.json.annotation.Alias;
-import com.ace.dawdler.json.utils.LogUtils;
-import com.ace.dawdler.json.utils.TextUtils;
-import com.ace.dawdler.json.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +46,7 @@ public class JSONConverter {
                 continue;
             }
             String fieldName = fieldAlias.value();
-            if (TextUtils.isEmpty(fieldName)) {
+            if (isEmpty(fieldName)) {
                 continue;
             }
 
@@ -55,7 +55,7 @@ public class JSONConverter {
                 if (null == fieldObj) {
                     continue;
                 }
-                if (Utils.isPrimitiveType(fieldObj)) {
+                if (isPrimitiveType(fieldObj)) {
                     jsonObj.put(fieldName, fieldObj);
                 } else if (fieldObj instanceof List<?>) {
                     jsonObj.put(fieldName, convert2JSONArray((List<?>) fieldObj));
@@ -88,7 +88,7 @@ public class JSONConverter {
             if (null == t) {
                 continue;
             }
-            if (Utils.isPrimitiveType(t)) {
+            if (isPrimitiveType(t)) {
                 jsonArray.put(t);
             } else if (t instanceof List<?>) {
                 jsonArray.put(convert2JSONArray((List<?>) t));
@@ -109,7 +109,7 @@ public class JSONConverter {
      * @return
      */
     public static <T> T convertFromJSONObject(String jsonStr, Class<T> cls) {
-        if (TextUtils.isEmpty(jsonStr) || null == cls) {
+        if (isEmpty(jsonStr) || null == cls) {
             return null;
         }
 
@@ -131,7 +131,7 @@ public class JSONConverter {
      * @return
      */
     public static <T> List<T> convertFromJSONArray(String jsonStr, Type type) {
-        if (TextUtils.isEmpty(jsonStr) || null == type) {
+        if (isEmpty(jsonStr) || null == type) {
             return null;
         }
 
@@ -154,7 +154,7 @@ public class JSONConverter {
      */
     public static <T> List<T> convertFromJSONArray(JSONArray jsonArray, Type type) {
         if (null == jsonArray || null == type) {
-            LogUtils.printLog("null == jsonArray or null == type, return.");
+            printLog("null == jsonArray or null == type, return.");
             return null;
         }
 
@@ -166,7 +166,7 @@ public class JSONConverter {
             }
 
             if (element instanceof JSONObject) {
-                Class<T> cls = (Class<T>) Utils.getClass(type.getTypeName());
+                Class<T> cls = (Class<T>) getClass(type.getTypeName());
                 T obj = convertFromJSONObject((JSONObject) element, cls);
                 resultList.add(obj);
             } else if (element instanceof JSONArray) {
@@ -189,10 +189,10 @@ public class JSONConverter {
      */
     public static <T> T convertFromJSONObject(JSONObject jsonObj, Class<T> cls) {
         if (null == jsonObj || null == cls) {
-            LogUtils.printLog("convertFrom jsonObj is null or cls is null.");
+            printLog("convertFrom jsonObj is null or cls is null.");
             return null;
         }
-        LogUtils.printLog("convertFrom jsonObj is : " + jsonObj.toString() + " cls is: " + cls.getName());
+        printLog("convertFrom jsonObj is : " + jsonObj.toString() + " cls is: " + cls.getName());
 
         T instance = null;
         try {
@@ -203,13 +203,13 @@ public class JSONConverter {
             e.printStackTrace();
         }
         if (null == instance) {
-            LogUtils.printLog("instance is null, return.");
+            printLog("instance is null, return.");
             return null;
         }
 
         Field[] fields = cls.getDeclaredFields();
         if (null == fields || fields.length == 0) {
-            LogUtils.printLog("fields is empty, return.");
+            printLog("fields is empty, return.");
             return null;
         }
         int fieldLength = fields.length;
@@ -224,18 +224,18 @@ public class JSONConverter {
                 continue;
             }
             String fieldName = fieldAlias.value();
-            if (TextUtils.isEmpty(fieldName)) {
+            if (isEmpty(fieldName)) {
                 continue;
             }
-            LogUtils.printLog("fieldName is: " + fieldName);
+            printLog("fieldName is: " + fieldName);
             if (!jsonObj.has(fieldName)) {
-                LogUtils.printLog("jsonObj has no fieldName, return.");
+                printLog("jsonObj has no fieldName, return.");
                 continue;
             }
 
             try {
                 String fieldTypeName = field.getType().getSimpleName();
-                LogUtils.printLog("fieldTypeName is: " + fieldTypeName);
+                printLog("fieldTypeName is: " + fieldTypeName);
                 field.setAccessible(true);
                 if ("int".equals(fieldTypeName)) {
                     int value = jsonObj.optInt(fieldName);
@@ -274,4 +274,64 @@ public class JSONConverter {
         return instance;
     }
 
+    /**
+     * print log.
+     * @param content
+     */
+    private static void printLog(String content) {
+        System.out.println(content);
+    }
+
+    /**
+     * check the object is primitive type or not.
+     *
+     * @param o
+     * @return
+     */
+    private static boolean isPrimitiveType(Object o) {
+        return o instanceof Integer
+                || o instanceof String
+                || o instanceof Boolean
+                || o instanceof Double
+                || o instanceof Float
+                || o instanceof Long
+                || o instanceof Byte
+                || o instanceof Character
+                || o instanceof Short;
+    }
+
+    /**
+     * convert the String class name to Class object.
+     *
+     * @param className
+     * @return
+     */
+    private static Class<?> getClass(String className) {
+        try {
+            Class<?> cls = Class.forName(className);
+            return cls;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * check the string is null or empty.
+     *
+     * @param str
+     * @return
+     */
+    private static boolean isEmpty(String str) {
+        if (null == str || str.length() <= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD})
+    public @interface Alias {
+        String value();
+    }
 }

@@ -10,7 +10,6 @@ import java.io.Writer;
 import java.util.*;
 
 import com.ace.dawdler.json.utils.FileUtils;
-import com.ace.dawdler.json.utils.LogUtils;
 import com.ace.dawdler.json.utils.Utils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -57,7 +56,7 @@ public class CodeGenerator {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("packageName", packageName);
         root.put("className", className);
-        root.put("author", "aceding");
+        root.put("author", "DawdlerJson auto create.");
         root.put("date", new Date());
         root.put("attrs", attr_list);
 

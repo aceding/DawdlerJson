@@ -1,7 +1,7 @@
 package ${packageName};
 
 import com.ace.dawdler.json.converter.JSONConverter;
-import com.ace.dawdler.json.annotation.Alias;
+import com.ace.dawdler.json.converter.JSONConverter.Alias;
 import java.lang.reflect.Type;
 import org.json.JSONObject;
 
