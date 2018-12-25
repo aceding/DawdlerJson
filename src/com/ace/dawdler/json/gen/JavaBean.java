@@ -8,8 +8,8 @@ import org.json.JSONObject;
 import java.util.List;
  
 /**
- *	
- *	@date: 2018-12-25 17:38:59 
+ *	@author auto create
+ *	@date: 2018-12-25 18:23:48 
  */
 public class JavaBean {
 

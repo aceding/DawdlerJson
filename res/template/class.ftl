@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.util.List;
  
 /**
- *	<#if author == "aceding">@author aceding </#if>
+ *	@author ${author}
  *	@date: ${date?string("yyyy-MM-dd HH:mm:ss")} 
  */
 public class ${className} {

@@ -57,7 +57,7 @@ public class CodeGenerator {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("packageName", packageName);
         root.put("className", className);
-        root.put("author", "DawdlerJson auto create.");
+        root.put("author", "auto create");
         root.put("date", new Date());
         root.put("attrs", attr_list);
 
