@@ -111,25 +111,25 @@ public class JSONParser {
             System.out.println("key is: " + key);
             Attr attr = null;
             if (obj instanceof Integer) {
-                attr = new Attr(key, "int");
+                attr = new Attr(key, "int", getFieldName(key));
             } else if (obj instanceof Long) {
-                attr = new Attr(key, "long");
+                attr = new Attr(key, "long", getFieldName(key));
             } else if (obj instanceof Boolean) {
-                attr = new Attr(key, "boolean");
+                attr = new Attr(key, "boolean", getFieldName(key));
             } else if (obj instanceof Double || obj instanceof Float) {
-                attr = new Attr(key, "double");
+                attr = new Attr(key, "double", getFieldName(key));
             } else if (obj instanceof String) {
-                attr = new Attr(key, "String");
+                attr = new Attr(key, "String", getFieldName(key));
             } else if (obj instanceof JSONObject) {
-                String usableClsName = getUsableClassName(fileName, key);
+                String usableClsName = getUsableClassName(fileName, getFieldName(key));
                 parseJSONObject(fileName + "#" + usableClsName, (JSONObject) obj, classMap);
-                attr = new Attr(key, usableClsName);
+                attr = new Attr(key, usableClsName, getFieldName(key));
             } else if (obj instanceof JSONArray) {
-                String usableClsName = getUsableClassName(fileName, key);
+                String usableClsName = getUsableClassName(fileName, getFieldName(key));
                 String type = parseJSONArray(usableClsName, fileName + "#" + usableClsName, (JSONArray) obj, classMap);
-                attr = new Attr(key, "List<" + type + ">");
+                attr = new Attr(key, "List<" + type + ">", getFieldName(key));
             } else {
-                attr = new Attr(key, "Object");
+                attr = new Attr(key, "Object", getFieldName(key));
             }
 
             attrMap.put(key, attr);
@@ -195,6 +195,7 @@ public class JSONParser {
 
     /**
      * original class name maybe used, make the new class name and return.
+     *
      * @param fileName
      * @param className
      * @return
@@ -214,5 +215,21 @@ public class JSONParser {
             }
         }
         return firstWord2UpperCase(className);
+    }
+
+    public static String getFieldName(String alias) {
+        if (TextUtils.isEmpty(alias)) {
+            return alias;
+        }
+        String[] strList = alias.split("_");
+        StringBuilder strBuilder = new StringBuilder();
+        for (int i = 0, n = strList.length; i < n; i++) {
+            if(i > 0) {
+                strBuilder.append(TextUtils.firstWord2UpperCase(strList[i]));
+            } else {
+                strBuilder.append(strList[i]);
+            }
+        }
+        return strBuilder.toString();
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public class ${className} {
     <#list attrs as a>
 
-    @Alias("${a.field}")
+    @Alias("${a.alias}")
     public ${a.type} ${a.field};
     </#list>
     

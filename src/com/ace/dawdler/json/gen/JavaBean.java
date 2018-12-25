@@ -9,30 +9,30 @@ import java.util.List;
  
 /**
  *	@author auto create
- *	@date: 2018-12-25 18:23:48 
+ *	@date: 2018-12-25 21:09:11 
  */
 public class JavaBean {
 
     @Alias("res_type")
-    public String res_type;
+    public String resType;
 
     @Alias("res_url")
-    public String res_url;
+    public String resUrl;
 
     @Alias("jump_url")
-    public String jump_url;
+    public String jumpUrl;
 
     @Alias("time_begin")
-    public String time_begin;
+    public String timeBegin;
 
     @Alias("time_end")
-    public String time_end;
+    public String timeEnd;
 
     @Alias("jump_type")
-    public String jump_type;
+    public String jumpType;
 
     @Alias("res_md5")
-    public String res_md5;
+    public String resMd5;
     
     public static JavaBean convertFromJSONObject(String content){
     	JavaBean result = JSONConverter.convertFromJSONObject(content, JavaBean.class);
