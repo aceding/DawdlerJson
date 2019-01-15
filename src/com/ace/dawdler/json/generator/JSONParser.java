@@ -24,18 +24,18 @@ public class JSONParser {
      * @param className
      * @param jsonStr
      */
-    public static void parseJSONStr(String packageName, String className, String jsonStr) {
+    public static void parseJSONStr(String packageName, String className, String converterPackageName, String jsonStr) {
         if (TextUtils.isEmpty(jsonStr)) {
             return;
         }
 
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-            parseJSONObject(packageName, className, jsonObject);
+            parseJSONObject(packageName, className, converterPackageName, jsonObject);
         } catch (Exception e) {
             try {
                 JSONArray jsonArray = new JSONArray(jsonStr);
-                parseJSONArray(packageName, className, jsonArray);
+                parseJSONArray(packageName, className, converterPackageName, jsonArray);
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
@@ -49,14 +49,15 @@ public class JSONParser {
      * @param className
      * @param jsonObj
      */
-    public static void parseJSONObject(String packageName, String className, JSONObject jsonObj) {
+    public static void parseJSONObject(String packageName, String className,
+                                       String converterPackageName, JSONObject jsonObj) {
         if (null == jsonObj) {
             return;
         }
 
         LinkedHashMap<String, Map<String, Attr>> classMap = new LinkedHashMap<>();
         parseJSONObject(className, jsonObj, classMap);
-        CodeGenerator.genJavaBeans(packageName, classMap);
+        CodeGenerator.genJavaBeans(packageName, converterPackageName, classMap);
     }
 
     /**
@@ -66,14 +67,15 @@ public class JSONParser {
      * @param className
      * @param jsonArray
      */
-    public static void parseJSONArray(String packageName, String className, JSONArray jsonArray) {
+    public static void parseJSONArray(String packageName, String className, String converterPackageName,
+                                      JSONArray jsonArray) {
         if (null == jsonArray) {
             return;
         }
 
         LinkedHashMap<String, Map<String, Attr>> classMap = new LinkedHashMap<>();
         parseJSONArray(className, className, jsonArray, classMap);
-        CodeGenerator.genJavaBeans(packageName, classMap);
+        CodeGenerator.genJavaBeans(packageName, converterPackageName, classMap);
     }
 
     /**

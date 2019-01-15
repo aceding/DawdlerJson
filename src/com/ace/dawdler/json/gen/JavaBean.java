@@ -9,24 +9,18 @@ import java.util.List;
  
 /**
  *	@author auto create
- *	@date: 2018-12-25 21:09:11 
+ *	@date: 2019-01-15 22:16:15 
  */
 public class JavaBean {
 
     @Alias("res_type")
-    public String resType;
+    public int resType;
 
     @Alias("res_url")
     public String resUrl;
 
     @Alias("jump_url")
     public String jumpUrl;
-
-    @Alias("time_begin")
-    public String timeBegin;
-
-    @Alias("time_end")
-    public String timeEnd;
 
     @Alias("jump_type")
     public String jumpType;

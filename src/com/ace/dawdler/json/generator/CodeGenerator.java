@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.*;
 
+import com.ace.dawdler.json.constants.ConstantsPath;
 import com.ace.dawdler.json.utils.FileUtils;
 import com.ace.dawdler.json.utils.LogUtils;
 import com.ace.dawdler.json.utils.Utils;
@@ -24,9 +25,7 @@ import freemarker.template.TemplateExceptionHandler;
  */
 public class CodeGenerator {
 
-    public static String ROOT_PATH = System.getProperty("user.dir");
-
-    public static String TEMPLATE_PATH = ROOT_PATH + File.separator + "res" + File.separator + "template";
+    public static String TEMPLATE_PATH = ConstantsPath.ROOT_PATH + File.separator + "res" + File.separator + "template";
 
     /**
      * method help to generator the outer class.
@@ -36,7 +35,8 @@ public class CodeGenerator {
      * @param fileName
      * @param attr_list
      */
-    private static void genClass(String packageName, String className, String fileName, List<Attr> attr_list) {
+    private static void genClass(String packageName, String className, String converterPackageName, String fileName,
+                                 List<Attr> attr_list) {
         Template temp = null;
 
         try {
@@ -57,11 +57,12 @@ public class CodeGenerator {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("packageName", packageName);
         root.put("className", className);
+        root.put("converterPackageName", converterPackageName);
         root.put("author", "auto create");
         root.put("date", new Date());
         root.put("attrs", attr_list);
 
-        File dir = new File(ROOT_PATH + "\\src\\" + Utils.packageName2Path(packageName));
+        File dir = new File(ConstantsPath.ROOT_PATH + "\\src\\" + Utils.packageName2Path(packageName));
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -202,7 +203,7 @@ public class CodeGenerator {
      *
      * @param classMap
      */
-    public static void genJavaBeans(String packageName, LinkedHashMap<String, Map<String, Attr>> classMap) {
+    public static void genJavaBeans(String packageName, String converterPackageName, LinkedHashMap<String, Map<String, Attr>> classMap) {
         if (null == classMap || classMap.isEmpty()) {
             return;
         }
@@ -215,7 +216,7 @@ public class CodeGenerator {
                 String className = fileName.substring(fileName.lastIndexOf("#") + 1);
                 genInnerClass(className, fileName, new ArrayList<>(attrMap.values()));
             } else {
-                genClass(packageName, fileName, fileName, new ArrayList<>(attrMap.values()));
+                genClass(packageName, fileName, converterPackageName, fileName, new ArrayList<>(attrMap.values()));
             }
         }
 
