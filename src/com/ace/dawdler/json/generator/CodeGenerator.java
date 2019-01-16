@@ -62,7 +62,7 @@ public class CodeGenerator {
         root.put("date", new Date());
         root.put("attrs", attr_list);
 
-        File dir = new File(ConstantsPath.ROOT_PATH + "\\src\\" + Utils.packageName2Path(packageName));
+        File dir = new File(ConstantsPath.JAVA_FILE_PATH + Utils.packageName2Path(packageName));
         if (!dir.exists()) {
             dir.mkdirs();
         }
